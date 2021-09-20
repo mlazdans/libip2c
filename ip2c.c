@@ -105,7 +105,6 @@ IPDBItem *ip2c_search(IPDBItem *data, CountryRangeTreeNode *node, unsigned long 
 	return found;
 }
 
-// TODO: check signature
 IPDB *ip2c_load_db_from_file(const char *file_name)
 {
 	IPDB *db = NULL;
@@ -118,6 +117,10 @@ IPDB *ip2c_load_db_from_file(const char *file_name)
 		return NULL;
 
 	fread(&db->ident, strlen(IP2C_DB_IDENT) + 1, 1, f);
+	if (strcmp(IP2C_DB_IDENT, db->ident) != 0) {
+		fclose(f);
+		return NULL;
+	}
 	fread(&db->vers_hi, sizeof(db->vers_hi), 1, f);
 	fread(&db->vers_lo, sizeof(db->vers_lo), 1, f);
 	fread(&db->rec_count, sizeof(db->rec_count), 1, f);
