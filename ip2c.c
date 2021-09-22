@@ -105,7 +105,7 @@ IPDBItem *ip2c_search(IPDBItem *data, CountryRangeTreeNode *node, unsigned long 
 	return found;
 }
 
-IPDB *ip2c_load_db_from_file(const char *file_name)
+IPDB *ip2c_db_load_file(const char *file_name)
 {
 	IPDB *db = NULL;
 	FILE *f;

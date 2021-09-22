@@ -31,7 +31,7 @@ typedef struct IPDB {
 	IPDBItem *data;
 } IPDB;
 
-IPDB*           ip2c_load_db_from_file(const char* file_name);
+IPDB*           ip2c_db_load_file(const char* file_name);
 void            ip2c_db_free(IPDB* db);
 unsigned long   ip2c_getcountry(const IPDB* db, const unsigned long* ip_array, const unsigned long ip_array_size, ip2c_iso* iso_codes);
 unsigned long   ip2c_ip2long(const char* ip);
