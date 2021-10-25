@@ -7,7 +7,7 @@
 #define IP2C_DB_VERS_LO 1
 
 typedef char ip2c_iso[3];
-typedef unsigned long ip2c_ip;
+typedef unsigned int ip2c_ip;
 
 typedef struct IPDBItem {
 	ip2c_ip start;
