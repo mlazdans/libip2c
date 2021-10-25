@@ -10,7 +10,7 @@
 CountryRangeTreeNode *ip2c_new_node(IPDBItem *data, unsigned int key)
 {
 	CountryRangeTreeNode *node = malloc(sizeof(CountryRangeTreeNode));
-	
+
 	if (node == NULL)
 		return NULL;
 
@@ -32,7 +32,7 @@ void ip2c_free_tree(CountryRangeTreeNode *node)
 {
 	if(node == NULL)
 		return;
-	
+
 	ip2c_free_tree(node->right);
 	ip2c_free_tree(node->left);
 
@@ -48,12 +48,11 @@ CountryRangeTreeNode *ip2c_build_tree(IPDBItem *data,  int floor, int ceil)
 		return NULL;
 
 	mid = (floor + ceil) / 2;
-	//printf("floor=%d, ceil=%d, mid=%d\n", floor, ceil, mid);
 	node = ip2c_new_node(data, mid);
 	node->right = ip2c_build_tree(data, mid + 1, ceil);
 	node->left = ip2c_build_tree(data, floor, mid - 1);
 
-	if(node->right && (node->right->min < node->min)) 
+	if(node->right && (node->right->min < node->min))
 		node->min = node->right->min;
 
 	if(node->left && (node->left->min < node->min))
@@ -64,7 +63,7 @@ CountryRangeTreeNode *ip2c_build_tree(IPDBItem *data,  int floor, int ceil)
 
 	if(node->left && (node->left->max > node->max))
 		node->max = node->left->max;
-	
+
 	return node;
 }
 
@@ -76,8 +75,6 @@ IPDBItem *ip2c_search(IPDBItem *data, CountryRangeTreeNode *node, ip2c_ip ip)
 		return NULL;
 
 	item = &data[node->key];
-
-	printf("min=%u, max=%u\n", item->start, item->end);
 
 	if((ip < node->min) || (ip > node->max))
 		return NULL;
