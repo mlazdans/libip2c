@@ -7,7 +7,7 @@
 #endif
 #include "ip2c.h"
 
-CountryRangeTreeNode *ip2c_new_node(IPDBItem *data, unsigned long key)
+CountryRangeTreeNode *ip2c_new_node(IPDBItem *data, unsigned int key)
 {
 	CountryRangeTreeNode *node = malloc(sizeof(CountryRangeTreeNode));
 	
@@ -23,7 +23,7 @@ CountryRangeTreeNode *ip2c_new_node(IPDBItem *data, unsigned long key)
 	return node;
 }
 
-unsigned long ip2c_interval(IPDBItem* data)
+unsigned int ip2c_interval(IPDBItem* data)
 {
 	return data->end - data->start;
 }
@@ -39,15 +39,16 @@ void ip2c_free_tree(CountryRangeTreeNode *node)
 	free(node);
 }
 
-CountryRangeTreeNode *ip2c_build_tree(IPDBItem *data, long floor, long ceil)
+CountryRangeTreeNode *ip2c_build_tree(IPDBItem *data,  int floor, int ceil)
 {
-	long mid;
+	int mid;
 	CountryRangeTreeNode *node;
 
 	if(floor > ceil)
 		return NULL;
 
 	mid = (floor + ceil) / 2;
+	//printf("floor=%d, ceil=%d, mid=%d\n", floor, ceil, mid);
 	node = ip2c_new_node(data, mid);
 	node->right = ip2c_build_tree(data, mid + 1, ceil);
 	node->left = ip2c_build_tree(data, floor, mid - 1);
@@ -63,11 +64,11 @@ CountryRangeTreeNode *ip2c_build_tree(IPDBItem *data, long floor, long ceil)
 
 	if(node->left && (node->left->max > node->max))
 		node->max = node->left->max;
-
+	
 	return node;
 }
 
-IPDBItem *ip2c_search(IPDBItem *data, CountryRangeTreeNode *node, unsigned long ip)
+IPDBItem *ip2c_search(IPDBItem *data, CountryRangeTreeNode *node, ip2c_ip ip)
 {
 	IPDBItem *item, *found_right, *found_left, *found = NULL;
 
@@ -75,6 +76,8 @@ IPDBItem *ip2c_search(IPDBItem *data, CountryRangeTreeNode *node, unsigned long 
 		return NULL;
 
 	item = &data[node->key];
+
+	printf("min=%u, max=%u\n", item->start, item->end);
 
 	if((ip < node->min) || (ip > node->max))
 		return NULL;
@@ -147,9 +150,9 @@ void ip2c_db_free(IPDB *db)
 	}
 }
 
-unsigned long ip2c_getcountry(const IPDB *db, const unsigned long *ip_array, const unsigned long ip_array_size, ip2c_iso *iso_codes)
+unsigned int ip2c_getcountry(const IPDB *db, const unsigned int *ip_array, const unsigned int ip_array_size, ip2c_iso *iso_codes)
 {
-	unsigned long r, found_c = 0;
+	unsigned int r, found_c = 0;
 	IPDBItem *item;
 
 	for (r = 0; r < ip_array_size; r++)
@@ -159,7 +162,7 @@ unsigned long ip2c_getcountry(const IPDB *db, const unsigned long *ip_array, con
 	return found_c;
 }
 
-unsigned long ip2c_ip2long(const char *ip)
+ip2c_ip ip2c_ip2long(const char *ip)
 {
 	return ntohl(inet_addr(ip));
 }
